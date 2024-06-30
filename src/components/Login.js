@@ -4,10 +4,22 @@ import {
   checkValidSignInData,
   checkValidSignUpData,
 } from "../utils/validateForm";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const toggleSignInForm = () => {
     setIsSignInForm(!isSignInForm);
   };
@@ -35,6 +47,73 @@ const Login = () => {
         password.current.value
       );
       setErrorMessage(message);
+    }
+
+    if (!isSignInForm) {
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((useCredential) => {
+          const user = useCredential.user;
+          console.log("Signed Up And Signed In:", user);
+          updateProfile(user, {
+            displayName: fullName.current.value,
+            photoURL:
+              "https://img.freepik.com/free-psd/3d-icon-social-media-app_23-2150049569.jpg?size=626&ext=jpg",
+          })
+            .then(() => {
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              console.log(
+                "profile update, Adding to reduxStore: ",
+                uid,
+                email,
+                displayName,
+                photoURL
+              );
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+              console.log(user);
+              navigate("/browse");
+            })
+            .catch((error) => {
+              console.log(
+                "profile update error",
+                error.code + "-" + error.message
+              );
+              setErrorMessage(error.code + "-" + error.message);
+            });
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+          navigate("/");
+        });
+    } else {
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((useCredential) => {
+          const user = useCredential.user;
+          console.log("Signed In:", user);
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+          navigate("/");
+        });
     }
   };
 

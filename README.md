@@ -9,6 +9,32 @@ Signup form
 UseRef
 Form Validation
 
+FireBase setup
+npm install -g firebase tools
+firebase login
+firebase init
+npm run build -> deploying app to production
+firebase deploy
+
+npm start
+
+create signup user account in firebase
+https://firebase.google.com/docs/auth?hl=en&authuser=0
+authentication, users, documentation
+
+implement signin user api
+created redux store with configureStore and createSlice
+
+on successfull Signin, push user information to redux store i.e., dispatch an action
+using onAuthStateChanged, when ever user signs in or out, i.e., authentication changes
+
+profile update (display name and photo url)
+post update dispatch action to reflect changes in redux store
+
+### Movies
+
+## handle Signout
+
 ## start
 
 npx create-react-app

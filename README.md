@@ -1,5 +1,14 @@
 # NETFLIX-GPT
 
+create react app
+configure tailwindcss
+configure routing
+Header
+Login form
+Signup form
+
+## start
+
 npx create-react-app
 npm start
 
@@ -28,3 +37,9 @@ npx tailwindcss init
 - NetflixGPT
   - Search Bar
   - Movie Suggestions
+
+# Routing
+
+npm install -D react-router-dom
+create appRouter by createBrowserRouter(path & element list)
+use RouterProvider and pass router={appRouter} configuration
